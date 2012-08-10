@@ -1,38 +1,28 @@
 {
-"verbose":false,
-"Core":{
-     "coreId":"WTF://",
+ "logsFolder":"logs",
+ "verbose":false,
+ "Core":{
+     "coreId":"<DefaultCoreId>",
      "redisHost":"localhost",
      "redisPort":6379,
      "swarmsfolder":"swarms"
-    },
-"Logger":{},
-"DocumentConvertor":
-            {
-            "doc2pdfCmdPath":"C:/Program Files/LibreOffice 3.5/program",
-            "doc2pdfCmd":"soffice.exe --headless --invisible --convert-to pdf [file] --outdir [outdir]",
-
-            "pdf2swfCmdPath":"C:/Program Files/SWFTools",
-            "pdf2swfCmd":"pdf2swf.exe [file] -o [swffile] -f -T 9 -t -s storeallcharacters"
-            },
-"Launcher":{
+  },
+ "Logger":{},
+ "Launcher":{
            "autorun":[
-                       "adaptors/Null.js",
-                       "adaptors/ClientAdaptor.js",
-                       "adaptors/ChatPersistence.js",
-                       "adaptors/FollowerListService.js",
-                       {"3":"adaptors/Worker.js"}
+                       {"node":"adaptors/Null.js",                  "enabled":true},
+                       {"node":"adaptors/Balancer.js",              "enabled":true},
+                       {"node":"adaptors/ClientAdapter.js",         "enabled":true},
+                       {"node":"adaptors/ChatPersistence.js",       "enabled":true},
+                       {"node":"adaptors/FollowerListService.js",   "enabled":true},
+                       {"node":"adaptors/SharedAdapter.js",         "enabled":true},
+                       {"node":"adaptors/Worker.js", "times":10                    }
            ]
     },
-"FailSupervisor":{
-           "watch":[
-                                  "adaptors/Null.js",
-                                  "adaptors/ClientAdaptor.js",
-                                  "adaptors/ChatPersistence.js",
-                                  "adaptors/FollowerListService.js",
-                                  "adaptors/SharedAdaptor.js"
-                      ]
-        },
+"ClientAdapter":{
+                "port":3000,
+                "bindAddress":"localhost"
+  },
 "SearchAdaptor":{
                 "cores":[
                         "collection1"
@@ -43,5 +33,3 @@
                  }
 
 }
-
-

@@ -3,37 +3,41 @@
  * Date: 6/7/12
  * Time: 9:49 PM
  */
-var benchmark =     //swarming description
+var benchmark =     //benchmark example!
 {
         vars:{
-            maxCount:0,
             startTime:0,
             tickTackCount:0,
-            debug:"true1"
+            debug:false
         },
         start:function(phases){
+                    cprint("Starting Benchmark");
                     this.startTime = Date.now();
-                    this.maxCount = phases;
-                    this.swarm("countInit");
-
+                    this.totalCount = phases;
+                    this.swarm("counterInit");
                 },
-        countInit:{          //phase
-            node:"SharedAdaptor",
+        counterInit:{          //phase
+            node:"SharedAdapter",
             code : function (){
-                var ctxt = getContext("benchmark",true);
+                logInfo("Resetting counter");
+                var ctxt = getContext("benchmark");
                 ctxt.counter = 0;
                 this.swarm("doParallelSwarm");
             }
         },
-        doParallelSwarm:{          //phase
-            node:"SharedAdaptor",
+        doParallelSwarm:{          //laouch as many parallel swarms as possible
+            node:"Launcher",
             code : function (){
-                var phases = parseInt(this.maxCount);
-                logInfo("Starting benchmark for " + phases + " phases!");
-                for(var i=0;i< phases/6;i++){   //launch parallel swarms
+                this.totalCount = parseInt(this.totalCount);
+                logInfo("Starting benchmark for " + this.totalCount + " phases!");
+                var phases = this.totalCount /8; //launch in 3 nodes 2 consecutive phases
+                this.maxCount = this.totalCount / 2;
+
+                for(var i=0;i< phases;i++){   //launch swarms in 4 nodes (process)
                     this.swarm("tickCore");
                     this.swarm("tackLogger");
                     this.swarm("clank");
+                    this.swarm("frank");
                 }
             }
         },
@@ -44,25 +48,30 @@ var benchmark =     //swarming description
                 }
         },
         tackLogger:{  //phase
-            node:"Logger",
+            node:"Null*",
             code : function (){
                 this.swarm("count");
             }
         },
         clank:{  //phase
-            node:"ClientAdaptor",
+            node:"ClientAdapter",
                 code : function (){
                 this.swarm("count");
             }
         },
-        count:{  //phase
-        node:"SharedAdaptor",
+        frank:{  //phase
+            node:"Balancer",
             code : function (){
-                var ctxt = getContext("benchmark",true);
+                this.swarm("count");
+            }
+        },
+        count:{  //phase
+        node:"SharedAdapter",
+            code : function (){
+                var ctxt = getContext("benchmark");
                 ctxt.counter++;
                 var v           = parseInt(this.maxCount);
-
-                if(ctxt.counter >= this.maxCount/2 ){   // we count twice each call to count (because of tick,tack,clank)
+                if(ctxt.counter >= this.maxCount ){
                     this.realCount = ctxt.counter;
                     this.swarm("printResults");
                 }
@@ -72,15 +81,15 @@ var benchmark =     //swarming description
             node:"Logger",
             code : function (){
                 var ct = Date.now();
-                var max = parseInt(this.maxCount);
+                var totalCount = parseInt(this.totalCount);
                 var diff = (ct - parseInt(this.startTime))/1000;
 
                 var speed = "Not enough phases requested!";
                 if(diff != 0){
-                    speed = "" + Math.ceil(max / diff) + " phases per second!";
+                    speed = "" + Math.ceil(totalCount / diff) + " phases per second!";
                 }
 
-                this.result = "Benchmark results: " + speed + " Time spent: " + diff + "seconds " /*+ this.realCount*/
+                this.result = "Benchmark results: " + speed + " Time spent: " + diff + "seconds ";
                 console.log(this.result);
                 this.swarm("results", this.sessionId);
             }

@@ -3,8 +3,7 @@
  */
 
 
-var thisAdaptor;
-thisAdaptor = require('swarmutil').createAdaptor("Balancer");
+thisAdapter = require('swarmutil').createAdapter("Balancer");
 
 function workerStatus(workerName){
     this.workerName = workerName;
@@ -113,13 +112,17 @@ workerIsAlive = function (workerName,pingTime,pongTime){
 
 taskDone = function (workerName){
     //cprint("TaskDone:" + J(workers[workerName]) + " " + workerName);
-    workers[workerName].loadCounter--;
+    if(workers[workerName] != undefined){
+        workers[workerName].loadCounter--;
+    }
 }
 
 
 taskBegin = function(workerName){
     //cprint("TaskBegin:" + J(workers[workerName]) + " " + workerName);
-    workers[workerName].loadCounter++;
+    if(workers[workerName] != undefined){
+        workers[workerName].loadCounter++;
+    }
 }
 
 

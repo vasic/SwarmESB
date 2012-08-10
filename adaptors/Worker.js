@@ -5,11 +5,10 @@
 var uuid = require('node-uuid');
 var workerId = "worker:" + uuid.v4();
 
-var thisAdaptor;
-thisAdaptor = require('swarmutil').createAdaptor(workerId,onReadyCallback);
+require('swarmutil').createAdapter(workerId,onReadyCallback);
 
 function onReadyCallback(){
-    startSwarm("WorkerSwarm.js","register",workerId);
+    startSwarm("WorkerManagement.js","register",workerId);
 }
 
 
