@@ -1,0 +1,8 @@
+{
+"cores":[
+        "collection1"
+       ],
+ "defaultCore":"collection1",
+ "host":"localhost",
+ "port":8983
+ }
