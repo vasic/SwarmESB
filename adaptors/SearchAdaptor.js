@@ -1,12 +1,11 @@
-/**
- * Created by: Narcis ARMASU <narcis.armasu@trp.ro>
- * Date: 7/9/12
- */
 
 var thisAdaptor;
+thisAdaptor = require('swarmutil').createAdaptor("SearchAdaptor");
 
-var searchConfigLocation = 'etc/searchConfig';
-var searchConfig = require('swarmutil').readConfig(searchConfigLocation);
+/*var searchConfigLocation = 'etc/searchConfig';
+var searchConfig = require('swarmutil').readConfig(searchConfigLocation);*/
+var searchConfig = thisAdaptor.config["SearchAdaptor"];
+
 //solr indexes
 var cores = new Array();
 var printDebugMsgs = true;
@@ -323,4 +322,3 @@ function getNumberOfDocuments(client, callback) {
         }
     });
 }
-
